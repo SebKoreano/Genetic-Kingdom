@@ -22,10 +22,12 @@
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="GridMap.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="NodeVector.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Enemy.hpp" />
     <ClInclude Include="GridMap.hpp" />
+    <ClInclude Include="NodeVector.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
