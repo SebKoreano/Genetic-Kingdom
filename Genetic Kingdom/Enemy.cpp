@@ -5,7 +5,8 @@ Enemy::Enemy(GridMap& map, float cellSize, float speed)
     : gridMap(map), cellSize(cellSize), speed(speed)
 {
     auto startPos = gridMap.getStartPosition();
-    currentRow = startPos.y; currentCol = startPos.x;
+    currentRow = startPos.y;
+    currentCol = startPos.x;
     shape.setSize({ cellSize * 0.8f, cellSize * 0.8f });
     shape.setFillColor(sf::Color::Magenta);
     shape.setPosition(sf::Vector2f(
@@ -14,12 +15,17 @@ Enemy::Enemy(GridMap& map, float cellSize, float speed)
     ));
 }
 
+bool Enemy::isAlive() const { return alive; }
+
+void Enemy::resetPath() { pathCalculated = false; }
+
 void Enemy::update(float dt)
 {
+    if (!alive) return;
     if (!pathCalculated) {
         calculatePath();
         pathCalculated = true;
-        pathIndex = 1; // Empezar en el siguiente nodo
+        pathIndex = 1;
     }
     if (pathIndex < path.size()) {
         Node* target = path.get(pathIndex);
@@ -39,24 +45,12 @@ void Enemy::update(float dt)
             currentRow = target->row;
             currentCol = target->col;
             ++pathIndex;
-            if (pathIndex >= path.size()) {
-                // Llegó a meta: resucitar en inicio
-                auto start = gridMap.getStartPosition();
-                currentRow = start.y; currentCol = start.x;
-                shape.setPosition(sf::Vector2f(
-                    currentCol * cellSize + cellSize * 0.1f,
-                    currentRow * cellSize + cellSize * 0.1f
-                ));
-                pathCalculated = false;
-            }
+            if (pathIndex >= path.size()) alive = false;
         }
     }
 }
 
-void Enemy::draw(sf::RenderWindow& window)
-{
-    window.draw(shape);
-}
+void Enemy::draw(sf::RenderWindow& window) const { if (alive) window.draw(shape); }
 
 void Enemy::calculatePath()
 {
@@ -64,20 +58,16 @@ void Enemy::calculatePath()
     Node* startNode = &gridMap.getNode(currentRow, currentCol);
     auto goalPos = gridMap.getGoalPosition();
     Node* goalNode = &gridMap.getNode(goalPos.y, goalPos.x);
-
     startNode->gCost = 0;
     startNode->hCost = heuristic(startNode, goalNode);
     startNode->parent = nullptr;
     openList.push_back(startNode);
-
     while (openList.size() > 0) {
         Node* current = getLowestFCostNode();
         if (current == goalNode) { reconstructPath(goalNode); return; }
-        // mover a closed
         for (int i = 0; i < openList.size(); ++i)
             if (openList.get(i) == current) { openList.removeAt(i); break; }
         closedList.push_back(current);
-
         for (Node* nbr : gridMap.getNeighbors(*current)) {
             if (isInList(closedList, nbr)) continue;
             float tentativeG = current->gCost + 1;
@@ -91,10 +81,7 @@ void Enemy::calculatePath()
     }
 }
 
-float Enemy::heuristic(Node* a, Node* b)
-{
-    return std::abs(a->row - b->row) + std::abs(a->col - b->col);
-}
+float Enemy::heuristic(Node* a, Node* b) const { return std::abs(a->row - b->row) + std::abs(a->col - b->col); }
 
 Node* Enemy::getLowestFCostNode()
 {
@@ -107,7 +94,7 @@ Node* Enemy::getLowestFCostNode()
     return best;
 }
 
-bool Enemy::isInList(const NodeVector& list, Node* node)
+bool Enemy::isInList(const NodeVector& list, Node* node) const
 {
     for (int i = 0; i < list.size(); ++i)
         if (list.get(i) == node) return true;

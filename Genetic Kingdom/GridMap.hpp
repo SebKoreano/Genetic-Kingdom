@@ -18,18 +18,19 @@ public:
 class GridMap {
 public:
     GridMap(int rows, int cols, float cellSize);
-    void draw(sf::RenderWindow& window);
+    void draw(sf::RenderWindow& window) const;
     sf::Vector2i getStartPosition() const;
     sf::Vector2i getGoalPosition() const;
-
     Node& getNode(int row, int col);
-    std::vector<Node*> getNeighbors(Node& node);
+    std::vector<Node*> getNeighbors(Node& node) const;
+    void toggleWalkable(int row, int col);
+    bool isPathAvailable() const;
 
 private:
     int rows, cols;
     float cellSize;
     std::vector<std::vector<Node>> grid;
     void createGrid();
-    sf::Vector2i start = { 0, 1 };
-    sf::Vector2i goal = { 19, 13 };
+    sf::Vector2i start = { 0,1 };
+    sf::Vector2i goal = { 19,13 };
 };
