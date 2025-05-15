@@ -1,40 +1,40 @@
 #include <SFML/Graphics.hpp>
 #include "GridMap.hpp"
-#include "Enemy.hpp"
-
-constexpr int windowWidth = 800;
-constexpr int windowHeight = 800;
-constexpr int gridCols = 20;
-constexpr int gridRows = 15;
-constexpr int gridWidth = 800;
-constexpr int gridHeight = 600;
-constexpr int cellSize = gridWidth / gridCols;
+#include "WaveManager.hpp"
 
 int main() {
-    sf::RenderWindow window(sf::VideoMode({windowWidth, windowHeight}), "Tower Defense Grid");
+    constexpr int gridRows = 15, gridCols = 20;
+    const float cellSize = 40.f, speed = 120.f;
+    const int minEnemies = 5, maxEnemies = 10;
+
+    int width = gridCols * static_cast<int>(cellSize);
+    int height = gridRows * static_cast<int>(cellSize) + 50;
+    sf::RenderWindow window(sf::VideoMode({ 800, 800 }), "Tower Defense");
+    window.setFramerateLimit(60);
+
+    sf::Font font;
+    if (!font.openFromFile("Nexa-Heavy.ttf")) {
+        // error cargar fuente
+    }
 
     GridMap map(gridRows, gridCols, cellSize);
-    sf::Vector2i spawnPos = map.getStartPosition();
-    Enemy enemy(spawnPos.y, spawnPos.x, cellSize);
-
+    WaveManager waveMgr(map, cellSize, speed, minEnemies, maxEnemies, font);
+    sf::Clock clock;
     while (window.isOpen()) {
-        // Read input
-        while (const std::optional<sf::Event> event = window.pollEvent()) {
-            if (event->is<sf::Event::Closed>())
-                window.close();
+        float dt = clock.restart().asSeconds();
+        while (auto ev = window.pollEvent()) {
+            if (ev->is<sf::Event::Closed>()) window.close();
+            else if (const auto* mb = ev->getIf<sf::Event::MouseButtonPressed>()) {
+                if (mb->button == sf::Mouse::Button::Left)
+                    waveMgr.handleClick(mb->position.x, mb->position.y);
+            }
         }
-
-        // Update
-        enemy.update();
-
+        waveMgr.update(dt);
         window.clear();
-
-        // Draw
         map.draw(window);
-        enemy.draw(window);
-
+        waveMgr.draw(window);
         window.display();
     }
 
-    return 0;
+	return 0;
 }
