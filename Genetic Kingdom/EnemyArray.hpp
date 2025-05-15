@@ -3,17 +3,15 @@
 
 class EnemyArray {
 public:
-    EnemyArray(int initialCapacity = 10);
+    EnemyArray(int initCap = 10);
     ~EnemyArray();
     void push(Enemy* e);
-    Enemy* get(int index) const;
-    void removeAt(int index);
+    Enemy* get(int idx) const;
+    void removeAt(int idx);
     int size() const;
     void clear();
-
 private:
     Enemy** data;
-    int capacity;
-    int count;
+    int cap, cnt;
     void resize();
 };

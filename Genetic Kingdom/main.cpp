@@ -5,28 +5,26 @@
 int main() {
     constexpr int gridRows = 15, gridCols = 20;
     const float cellSize = 40.f, speed = 120.f;
-    int waveSizesArray[] = { 5, 10, 15 };
-    int waveCount = sizeof(waveSizesArray) / sizeof(int);
+    const int minEnemies = 5, maxEnemies = 10;
 
-    int windowWidth = gridCols * static_cast<int>(cellSize);
-    int windowHeight = gridRows * static_cast<int>(cellSize) + 50;
+    int width = gridCols * static_cast<int>(cellSize);
+    int height = gridRows * static_cast<int>(cellSize) + 50;
     sf::RenderWindow window(sf::VideoMode({ 800, 800 }), "Tower Defense");
     window.setFramerateLimit(60);
 
     sf::Font font;
     if (!font.openFromFile("Nexa-Heavy.ttf")) {
-        // Manejar error de fuente
+        // error cargar fuente
     }
 
     GridMap map(gridRows, gridCols, cellSize);
-    WaveManager waveMgr(map, cellSize, speed, waveSizesArray, waveCount, font);
+    WaveManager waveMgr(map, cellSize, speed, minEnemies, maxEnemies, font);
     sf::Clock clock;
-
     while (window.isOpen()) {
         float dt = clock.restart().asSeconds();
-        while (auto event = window.pollEvent()) {
-            if (event->is<sf::Event::Closed>()) window.close();
-            else if (const auto* mb = event->getIf<sf::Event::MouseButtonPressed>()) {
+        while (auto ev = window.pollEvent()) {
+            if (ev->is<sf::Event::Closed>()) window.close();
+            else if (const auto* mb = ev->getIf<sf::Event::MouseButtonPressed>()) {
                 if (mb->button == sf::Mouse::Button::Left)
                     waveMgr.handleClick(mb->position.x, mb->position.y);
             }
@@ -37,5 +35,6 @@ int main() {
         waveMgr.draw(window);
         window.display();
     }
-    return 0;
+
+	return 0;
 }
