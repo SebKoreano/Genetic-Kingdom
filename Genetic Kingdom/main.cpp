@@ -2,6 +2,7 @@
 #include "GridMap.hpp"
 #include "Enemy.hpp"
 
+
 constexpr int windowWidth = 800;
 constexpr int windowHeight = 800;
 constexpr int gridCols = 20;
@@ -13,26 +14,28 @@ constexpr int cellSize = gridWidth / gridCols;
 int main() {
     sf::RenderWindow window(sf::VideoMode({windowWidth, windowHeight}), "Tower Defense Grid");
 
+	window.setFramerateLimit(60);
+
     GridMap map(gridRows, gridCols, cellSize);
-    sf::Vector2i spawnPos = map.getStartPosition();
-    Enemy enemy(spawnPos.y, spawnPos.x, cellSize);
+    Enemy enemy(map, cellSize, 120.f);
+    sf::Clock clock;
 
     while (window.isOpen()) {
-        // Read input
-        while (const std::optional<sf::Event> event = window.pollEvent()) {
-            if (event->is<sf::Event::Closed>())
+        float dt = clock.restart().asSeconds();
+
+        // Procesar eventos usando la nueva API de SFML 3.0
+        while (auto ev = window.pollEvent()) {
+            if (ev->is<sf::Event::Closed>())
                 window.close();
         }
 
-        // Update
-        enemy.update();
+        // Actualizar
+        enemy.update(dt);
 
+        // Renderizar
         window.clear();
-
-        // Draw
         map.draw(window);
         enemy.draw(window);
-
         window.display();
     }
 

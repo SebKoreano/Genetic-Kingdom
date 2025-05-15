@@ -1,15 +1,27 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "GridMap.hpp"
+#include "NodeVector.h"
 
 class Enemy {
 public:
-    Enemy(int startRow, int startCol, float cellSize);
-
-    virtual void update(); 
+    Enemy(GridMap& map, float cellSize, float speed = 100.f);
+    void update(float dt);
     void draw(sf::RenderWindow& window);
 
-protected:
+private:
+    GridMap& gridMap;
+    float cellSize;
+    float speed;
+    NodeVector openList, closedList, path;
+    bool pathCalculated = false;
+    int pathIndex = 0;
+    int currentRow = 0, currentCol = 0;
     sf::RectangleShape shape;
-    int currentRow, currentCol;
+
+    void calculatePath();
+    float heuristic(Node* a, Node* b);
+    Node* getLowestFCostNode();
+    bool isInList(const NodeVector& list, Node* node);
+    void reconstructPath(Node* endNode);
 };
