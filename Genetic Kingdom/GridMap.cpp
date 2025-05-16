@@ -7,7 +7,7 @@ Node::Node(int r, int c, float size)
 {
     shape.setSize({ size - 1.f, size - 1.f });
     shape.setPosition(sf::Vector2f(c * size, r * size));
-    shape.setFillColor(sf::Color::Blue);
+    shape.setFillColor(sf::Color(34, 139, 34)); 
 }
 
 GridMap::GridMap(int rows, int cols, float cellSize)
@@ -69,7 +69,7 @@ void GridMap::toggleWalkable(int row, int col) {
         return;
     Node& node = getNode(row, col);
     node.walkable = !node.walkable;
-    node.shape.setFillColor(node.walkable ? sf::Color::Blue : sf::Color::Black);
+    node.shape.setFillColor(node.walkable ? sf::Color(34, 139, 34) : sf::Color::Black);
 }
 
 bool GridMap::isPathAvailable() const {

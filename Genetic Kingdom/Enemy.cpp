@@ -1,6 +1,11 @@
 #include "Enemy.hpp"
 #include <cmath>
 
+// Setter para colorear el enemigo
+void Enemy::setColor(const sf::Color& color) {
+    shape.setFillColor(color);
+}
+
 Enemy::Enemy(GridMap& map, float cellSize, float speed)
     : gridMap(map), cellSize(cellSize), speed(speed)
 {

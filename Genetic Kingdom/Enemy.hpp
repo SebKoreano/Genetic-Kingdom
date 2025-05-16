@@ -10,9 +10,15 @@ public:
     void draw(sf::RenderWindow& window) const;
     bool isAlive() const;
     void resetPath();
+    void setColor(const sf::Color& color);
+    float maxHealth, currentHealth;
+    float speed;
+    float resistArrow;
+    float resistMagic;
+    float resistArtillery;
 private:
     GridMap& gridMap;
-    float cellSize, speed;
+    float cellSize;
     NodeVector openList, closedList, path;
     bool pathCalculated = false;
     int pathIndex = 0;
