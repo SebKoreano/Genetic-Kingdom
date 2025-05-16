@@ -69,7 +69,6 @@ void GridMap::toggleWalkable(int row, int col) {
         return;
     Node& node = getNode(row, col);
     node.walkable = !node.walkable;
-    node.shape.setFillColor(node.walkable ? sf::Color(34, 139, 34) : sf::Color::Black);
 }
 
 bool GridMap::isPathAvailable() const {
