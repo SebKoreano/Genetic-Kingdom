@@ -1,24 +1,37 @@
 #include "GameController.hpp"
 
-GameController::GameController(sf::RenderWindow& window, int rows, int cols, float cellSize)
+GameController::GameController(sf::RenderWindow& window,
+    int rows,
+    int cols,
+    float cellSize,
+    const sf::Font& font)
     : window(window)
-    , map(rows, cols, cellSize)            // Inicializa GridMap
+    , map(rows, cols, cellSize)
     , player(200, 10)
     , waveMgr(map, cellSize, 120.f, 5, 10, font)
     , placementMgr(cellSize, font)
+    , goldText(font)
 {
-    if (!font.openFromFile("Nexa-Heavy.ttf")) {
-        // Manejo de error de fuente
-    }
     window.setFramerateLimit(60);
+
+    // Configurar texto de oro
+    goldText.setCharacterSize(24);
+    goldText.setFillColor(sf::Color::White);
+    goldText.setPosition(sf::Vector2f(150.f, rows * cellSize + 5.f));
 }
 
 void GameController::run() {  
    while (window.isOpen()) {  
+       // Procesar eventos  
        while (auto ev = window.pollEvent()) {  
-           if (ev && ev->is<sf::Event::Closed>()) window.close();  
-           handleEvent(&(*ev));  
+           if (ev && ev->is<sf::Event::Closed>()) {  
+               window.close();  
+           }  
+           if (ev) {  
+               handleEvent(&(*ev));  
+           }  
        }  
+
        float dt = clock.restart().asSeconds();  
        update(dt);  
        draw();  
@@ -34,22 +47,25 @@ void GameController::handleEvent(const sf::Event* ev) {
             if (placementMgr.isActive()) {
                 Tower* t = placementMgr.processClick(x, y);
                 if (t) {
+                    // Intentar colocar torre como obstáculo
                     map.toggleWalkable(selectedRow, selectedCol);
                     if (!map.isPathAvailable() || !player.spendGold(t->getCost())) {
+                        // Revertir si bloqueo o falta de oro
                         map.toggleWalkable(selectedRow, selectedCol);
                         delete t;
                     }
                     else {
                         towers.push_back(t);
-                        // Reiniciar rutas enemigas
                         waveMgr.resetAllEnemyPaths();
                     }
                 }
             }
             else {
-                int col = x / static_cast<int>(placementMgr.getCellSize());
-                int row = y / static_cast<int>(placementMgr.getCellSize());
-                if (row < map.getRows() && col < map.getCols()) {
+                // Iniciar solicitud de colocación
+                float cs = placementMgr.getCellSize();
+                int col = x / static_cast<int>(cs);
+                int row = y / static_cast<int>(cs);
+                if (row >= 0 && row < map.getRows() && col >= 0 && col < map.getCols()) {
                     selectedRow = row;
                     selectedCol = col;
                     placementMgr.requestPlacement(row, col);
@@ -61,14 +77,29 @@ void GameController::handleEvent(const sf::Event* ev) {
 
 void GameController::update(float dt) {
     waveMgr.update(dt);
-    for (auto* t : towers) t->update(dt);
+    for (auto* t : towers) {
+        t->update(dt);
+    }
 }
 
 void GameController::draw() {
     window.clear();
     map.draw(window);
-    for (auto* t : towers) t->draw(window);
+
+    // Dibuja torres
+    for (auto* t : towers) {
+        t->draw(window);
+    }
+
+    // Dibuja oleada y demás UI
     waveMgr.draw(window);
+
+    // Actualizar y dibujar oro
+    goldText.setString("Oro: " + std::to_string(player.getGold()));
+    window.draw(goldText);
+
+    // Dibuja selector de torres si activo
     placementMgr.draw(window);
+
     window.display();
 }
