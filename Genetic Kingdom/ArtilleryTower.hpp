@@ -1,3 +1,4 @@
+#pragma once
 #include "Towers.hpp" 
 
 class ArtilleryTower : public Tower {

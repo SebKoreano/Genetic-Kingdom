@@ -11,6 +11,9 @@ public:
     void handleClick(int x, int y);
     void update(float dt);
     void draw(sf::RenderWindow& window);
+    /// Fuerza a todos los enemigos activos a recálcular su ruta
+    void resetAllEnemyPaths();
+
 private:
     GridMap& map;
     float cellSize, speed;

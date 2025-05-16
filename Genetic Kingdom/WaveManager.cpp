@@ -84,3 +84,9 @@ void WaveManager::draw(sf::RenderWindow& window) {
     waveText.setString(ss.str());
     window.draw(waveText);
 }
+
+void WaveManager::resetAllEnemyPaths() {
+    for (int i = 0; i < enemies.size(); ++i) {
+        enemies.get(i)->resetPath();
+    }
+}

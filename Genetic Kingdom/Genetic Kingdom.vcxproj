@@ -21,9 +21,11 @@
   <ItemGroup>
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="EnemyArray.cpp" />
+    <ClCompile Include="GameController.cpp" />
     <ClCompile Include="GridMap.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="NodeVector.cpp" />
+    <ClCompile Include="TowerPlacementManager.cpp" />
     <ClCompile Include="WaveManager.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -32,6 +34,7 @@
     <ClInclude Include="DarkElf.hpp" />
     <ClInclude Include="Enemy.hpp" />
     <ClInclude Include="EnemyArray.hpp" />
+    <ClInclude Include="GameController.hpp" />
     <ClInclude Include="GridMap.hpp" />
     <ClInclude Include="Harpy.hpp" />
     <ClInclude Include="MageTower.hpp" />
@@ -39,6 +42,7 @@
     <ClInclude Include="NodeVector.h" />
     <ClInclude Include="Ogre.hpp" />
     <ClInclude Include="Player.hpp" />
+    <ClInclude Include="TowerPlacementManager.hpp" />
     <ClInclude Include="Towers.hpp" />
     <ClInclude Include="WaveManager.hpp" />
   </ItemGroup>
