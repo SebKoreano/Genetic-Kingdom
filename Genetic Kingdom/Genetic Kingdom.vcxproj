@@ -27,10 +27,19 @@
     <ClCompile Include="WaveManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ArcherTower.hpp" />
+    <ClInclude Include="ArtilleryTower.hpp" />
+    <ClInclude Include="DarkElf.hpp" />
     <ClInclude Include="Enemy.hpp" />
     <ClInclude Include="EnemyArray.hpp" />
     <ClInclude Include="GridMap.hpp" />
+    <ClInclude Include="Harpy.hpp" />
+    <ClInclude Include="MageTower.hpp" />
+    <ClInclude Include="Mercenary.hpp" />
     <ClInclude Include="NodeVector.h" />
+    <ClInclude Include="Ogre.hpp" />
+    <ClInclude Include="Player.hpp" />
+    <ClInclude Include="Towers.hpp" />
     <ClInclude Include="WaveManager.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

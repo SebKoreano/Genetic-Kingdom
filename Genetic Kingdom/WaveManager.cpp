@@ -1,4 +1,8 @@
 #include "WaveManager.hpp"
+#include "Ogre.hpp"      
+#include "DarkElf.hpp"   
+#include "Harpy.hpp"     
+#include "Mercenary.hpp" 
 #include <cstdlib>
 #include <ctime>
 #include <sstream>
@@ -45,7 +49,21 @@ void WaveManager::update(float dt) {
     spawnTimer += dt;
     if (spawnedCount < spawnCount && spawnTimer >= spawnInterval) {
         spawnTimer -= spawnInterval;
-        enemies.push(new Enemy(map, cellSize, speed));
+        Enemy* e = nullptr;
+        int type = std::rand() % 4;
+        switch (type) {
+        case 0: e = new Ogre(map, cellSize, speed);      break;
+        case 1: e = new DarkElf(map, cellSize, speed);   break;
+        case 2: e = new Harpy(map, cellSize, speed);     break;
+        case 3: e = new Mercenary(map, cellSize, speed); break;
+        }
+        switch (type) {
+        case 0: e->setColor(sf::Color(0, 100, 0));    break; // Ogro
+        case 1: e->setColor(sf::Color(135, 206, 235));break; // Elfo Oscuro
+        case 2: e->setColor(sf::Color(139, 69, 19));  break; // Harpía
+        case 3: e->setColor(sf::Color(128, 128, 128));break; // Mercenario
+        }
+        enemies.push(e);
         ++spawnedCount;
     }
     for (int i = 0;i < enemies.size();++i) enemies.get(i)->update(dt);
