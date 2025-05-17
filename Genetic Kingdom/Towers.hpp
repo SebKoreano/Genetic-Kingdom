@@ -4,38 +4,40 @@
 // Clase base para torres  
 class Tower {  
 public:  
-  Tower(int cost, float range, int damage, float reloadTime, float cellSize,  
-      int row, int col)  
-      : cost(cost)  
-      , range(range)  
-      , damage(damage)  
-      , reloadTime(reloadTime)  
-      , reloadTimer(0.f)  
-  {  
-      shape.setRadius(cellSize * 0.4f);  
-      shape.setOrigin(sf::Vector2f(shape.getRadius(), shape.getRadius()));  
-      shape.setPosition(sf::Vector2f(col * cellSize + cellSize / 2.f, row * cellSize + cellSize / 2.f));  
-  }  
-  virtual ~Tower() = default;  
+    Tower(int cost, float range, int damage, float reloadTime, float cellSize,  
+        int row, int col)  
+        : cost(cost)  
+        , range(range)  
+        , damage(damage)  
+        , reloadTime(reloadTime)  
+        , reloadTimer(0.f)  
+    {  
+        shape.setRadius(cellSize * 0.4f);  
+        shape.setOrigin(sf::Vector2f(shape.getRadius(), shape.getRadius()));  
+        shape.setPosition(sf::Vector2f(col * cellSize + cellSize / 2.f, row * cellSize + cellSize / 2.f));  
+    }  
+    virtual ~Tower() = default;  
 
-  void update(float dt) {  
-      if (reloadTimer > 0.f) reloadTimer -= dt;  
-  }  
-  void draw(sf::RenderWindow& window) const { window.draw(shape); }  
-  bool canAttack() const { return reloadTimer <= 0.f; }  
-  void resetReload() { reloadTimer = reloadTime; }  
+    void update(float dt) {  
+        if (reloadTimer > 0.f) reloadTimer -= dt;  
+    }  
+    void draw(sf::RenderWindow& window) const { window.draw(shape); }  
+    bool canAttack() const { return reloadTimer <= 0.f; }  
+    void resetReload() { reloadTimer = reloadTime; }  
 
-  int   getCost()   const { return cost; }  
-  float getRange()  const { return range; }  
-  int   getDamage() const { return damage; }  
-  float getReload() const { return reloadTime; }  
+    int   getCost()   const { return cost; }  
+    float getRange()  const { return range; }  
+    int   getDamage() const { return damage; }  
+    float getReload() const { return reloadTime; }  
 
-protected:  
-  int cost;  
-  float range;  
-  int damage;  
-  float reloadTime;  
-  float reloadTimer;  
+
+protected: 
+
+    int cost;  
+    float range;  
+    int damage;  
+    float reloadTime;  
+    float reloadTimer;  
   sf::CircleShape shape;  
 };  
 

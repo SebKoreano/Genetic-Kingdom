@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="EnemyArray.cpp" />
     <ClCompile Include="GameController.cpp" />
@@ -31,6 +32,7 @@
   <ItemGroup>
     <ClInclude Include="ArcherTower.hpp" />
     <ClInclude Include="ArtilleryTower.hpp" />
+    <ClInclude Include="Bullet.hpp" />
     <ClInclude Include="DarkElf.hpp" />
     <ClInclude Include="Enemy.hpp" />
     <ClInclude Include="EnemyArray.hpp" />
