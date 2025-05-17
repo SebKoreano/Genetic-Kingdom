@@ -6,7 +6,7 @@ public:
     Ogre(GridMap& map, float cellSize, float speed)
         : Enemy(map, cellSize, speed)
     {
-        health = 150.f;
+        health = 140.f;
         arrowResist = 0.2f;
         magicResist = 0.1f;
         artilleryResist = 0.3f;

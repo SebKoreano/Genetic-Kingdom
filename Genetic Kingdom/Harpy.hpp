@@ -10,6 +10,6 @@ public:
         magicResist = 0.0f;
         artilleryResist = 0.5f;
         //setColor({ 0,100,0 });
-        this->speed = 100.f;
+        this->speed = 80.f;
     }
 };
