@@ -33,6 +33,11 @@ private:
     sf::Text goldText;
     sf::Text livesText;
 
+    // Game over UI
+    bool gameOver;
+    sf::RectangleShape gameOverBackground;
+    sf::Text gameOverText;
+
     // Para manejo de input
     int selectedRow = -1;
     int selectedCol = -1;

@@ -12,6 +12,9 @@ GameController::GameController(sf::RenderWindow& window,
     , placementMgr(cellSize, font)
     , goldText(font)
     , livesText(font)
+    , gameOver(false)
+    , gameOverBackground()
+    , gameOverText(font)
 {
     window.setFramerateLimit(60);
 
@@ -23,6 +26,15 @@ GameController::GameController(sf::RenderWindow& window,
     livesText.setCharacterSize(24);
     livesText.setFillColor(sf::Color::White);
     livesText.setPosition(sf::Vector2f(280.f, rows * cellSize + 5.f));
+    // Configure game over overlay
+    gameOverBackground.setSize(sf::Vector2f(window.getSize()));
+    gameOverBackground.setFillColor(sf::Color(0, 0, 0, 150));
+    gameOverText.setString("Perdiste!");
+    gameOverText.setCharacterSize(64);
+    gameOverText.setFillColor(sf::Color::White);
+    auto bounds = gameOverText.getLocalBounds();
+    gameOverText.setOrigin(sf::Vector2f(bounds.size.x / 2.f, bounds.size.y / 2.f));
+    gameOverText.setPosition(sf::Vector2f(window.getSize().x / 2.f, window.getSize().y / 2.f));
 }
 
 void GameController::run() {  
@@ -82,6 +94,7 @@ void GameController::handleEvent(const sf::Event* ev) {
 
 void GameController::update(float dt) {
     waveMgr.update(dt, player);
+    if (player.getLives() <= 0) gameOver = true;
 
     // obtener punteros vigentes
     auto enem = waveMgr.getEnemyList();
@@ -113,6 +126,11 @@ void GameController::draw() {
     // dibujar balas
     for (auto& b : bullets)
         window.draw(b.getShape());
+
+    if (gameOver) {
+        window.draw(gameOverBackground);
+        window.draw(gameOverText);
+    }
 
     placementMgr.draw(window);
     window.display();
