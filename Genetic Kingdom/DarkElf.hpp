@@ -5,11 +5,12 @@ class DarkElf : public Enemy {
 public:  
   DarkElf(GridMap& m, float cellSize, float speed)
       : Enemy(m, cellSize, speed) {
-      this->maxHealth = 120.f;  
-      this->currentHealth = maxHealth;  
-      this->speed = 150.f;    // muy rápido  
-      this->resistArrow = 0.3f;  
-      this->resistMagic = 0.8f;  
-      this->resistArtillery = 0.3f;  
+
+      health = 120.f;
+      arrowResist = 0.3f;
+      magicResist = 0.8f;
+      artilleryResist = 0.3f;
+      //setColor({ 0,100,0 });
+      this->speed = 150.f;
   }  
 };

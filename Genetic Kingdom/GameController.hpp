@@ -5,6 +5,8 @@
 #include "WaveManager.hpp"
 #include "TowerPlacementManager.hpp"
 #include <vector>
+#include "Bullet.hpp"
+
 
 /// Controlador principal del juego: orquesta mapa, oleadas, jugador y torres
 class GameController {
@@ -17,6 +19,8 @@ public:
 
     /// Inicia el loop principal
     void run();
+    std::vector<Tower*>   towers;
+    std::vector<Bullet>   bullets;
 
 private:
     sf::RenderWindow& window;
@@ -24,7 +28,6 @@ private:
     Player player;
     WaveManager waveMgr;
     TowerPlacementManager placementMgr;
-    std::vector<Tower*> towers;
 
     // Textos UI
     sf::Text goldText;

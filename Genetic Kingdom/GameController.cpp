@@ -77,29 +77,34 @@ void GameController::handleEvent(const sf::Event* ev) {
 
 void GameController::update(float dt) {
     waveMgr.update(dt);
-    for (auto* t : towers) {
-        t->update(dt);
+
+    // obtener punteros vigentes
+    auto enem = waveMgr.getEnemyList();
+
+    // actualizar torres (añade balas)
+    for (auto* t : towers)
+        t->update(enem, dt, bullets);
+
+    // actualizar y purgar balas
+    for (auto it = bullets.begin(); it != bullets.end();) {
+        it->update(dt);
+        if (it->isExpired()) it = bullets.erase(it);
+        else ++it;
     }
 }
 
 void GameController::draw() {
     window.clear();
     map.draw(window);
-
-    // Dibuja torres
-    for (auto* t : towers) {
-        t->draw(window);
-    }
-
-    // Dibuja oleada y demás UI
+    for (auto* t : towers) t->draw(window);
     waveMgr.draw(window);
-
-    // Actualizar y dibujar oro
     goldText.setString("Oro: " + std::to_string(player.getGold()));
     window.draw(goldText);
 
-    // Dibuja selector de torres si activo
-    placementMgr.draw(window);
+    // dibujar balas
+    for (auto& b : bullets)
+        window.draw(b.getShape());
 
+    placementMgr.draw(window);
     window.display();
 }

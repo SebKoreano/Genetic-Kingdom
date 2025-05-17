@@ -1,73 +1,107 @@
-#pragma once  
-#include <SFML/Graphics.hpp>  
+#pragma once
+#include <SFML/Graphics.hpp>
+#include <vector>
+#include "Enemy.hpp"
+#include "Bullet.hpp"
 
-// Clase base para torres  
-class Tower {  
-public:  
-    Tower(int cost, float range, int damage, float reloadTime, float cellSize,  
-        int row, int col)  
-        : cost(cost)  
-        , range(range)  
-        , damage(damage)  
-        , reloadTime(reloadTime)  
-        , reloadTimer(0.f)  
-    {  
-        shape.setRadius(cellSize * 0.4f);  
-        shape.setOrigin(sf::Vector2f(shape.getRadius(), shape.getRadius()));  
-        shape.setPosition(sf::Vector2f(col * cellSize + cellSize / 2.f, row * cellSize + cellSize / 2.f));  
-    }  
-    virtual ~Tower() = default;  
+class Tower {
+public:
+    Tower(int cost, float rangeCells, int damage, float reloadTime,
+        float cellSize, int row, int col)
+        : cost(cost), range(rangeCells), baseDamage(damage),
+        reloadTime(reloadTime), reloadTimer(0.f),
+        gridPos{ col,row }
+    {
+        shape.setRadius(cellSize * 0.4f);
+        shape.setOrigin({ shape.getRadius(), shape.getRadius() });
+        shape.setPosition({ col * cellSize + cellSize / 2, row * cellSize + cellSize / 2 });
+    }
+    virtual ~Tower() = default;
 
-    void update(float dt) {  
-        if (reloadTimer > 0.f) reloadTimer -= dt;  
-    }  
-    void draw(sf::RenderWindow& window) const { window.draw(shape); }  
-    bool canAttack() const { return reloadTimer <= 0.f; }  
-    void resetReload() { reloadTimer = reloadTime; }  
+    // Nuevo update con lista de enemigos y balas
+    void update(const std::vector<Enemy*>& enemies, float dt,
+        std::vector<Bullet>& bullets) {
+        // 1) validar target actual
+        if (target) {
+            if (!target->isAlive() || !inRange(target))
+                target = nullptr;
+        }
+        // 2) buscar nuevo blanco si no hay target
+        if (!target) {
+            for (auto* e : enemies) {
+                if (e->isAlive() && inRange(e)) {
+                    target = e;
+                    break;
+                }
+            }
+        }
+        // 3) recarga y disparo
+        reloadTimer = std::max(0.f, reloadTimer - dt);
+        if (target && target->isAlive() && reloadTimer <= 0.f) {
+            shoot(bullets);
+            reloadTimer = reloadTime;
+        }
+    }
 
-    int   getCost()   const { return cost; }  
-    float getRange()  const { return range; }  
-    int   getDamage() const { return damage; }  
-    float getReload() const { return reloadTime; }  
+    void draw(sf::RenderWindow& w) const { w.draw(shape); }
+    int   getCost() const { return cost; }
 
+protected:
+    int cost;
+    float range, baseDamage, reloadTime, reloadTimer;
+    sf::CircleShape shape;
+    sf::Vector2i gridPos;
+    Enemy* target = nullptr;
 
-protected: 
+    bool inRange(Enemy* e) const {
+        auto gp = e->getGridPosition();
+        int dx = std::abs(gridPos.x - gp.x),
+            dy = std::abs(gridPos.y - gp.y);
+        return std::sqrt(dx * dx + dy * dy) <= range;
+    }
 
-    int cost;  
-    float range;  
-    int damage;  
-    float reloadTime;  
-    float reloadTimer;  
-  sf::CircleShape shape;  
-};  
+    void shoot(std::vector<Bullet>& bullets) {
+        // calcular daño con resistencias
+        float dmg = baseDamage;
+        // detectar tipo vía color (o mejor vía dynamic_cast / enum)
+        // aquí ejemplifico por distancia de rango:
+        if (range >= 3) dmg *= (1.f - target->getArrowResistance());
+        else if (range >= 2) dmg *= (1.f - target->getMagicResistance());
+        else                 dmg *= (1.f - target->getArtilleryResistance());
+        target->takeDamage(dmg);
 
-// Torres específicas 
-class ArcherTower : public Tower {  
-public:  
-  ArcherTower(float cellSize, int row, int col)  
-      : Tower(/*cost=*/ 50, /*range=*/5.f, /*damage=*/10, /*reloadTime=*/0.5f,  
-          cellSize, row, col)  
-  {  
-      shape.setFillColor(sf::Color(139, 69, 19)); // Café claro
-  }  
-};  
+        // crear efecto visual
+        bullets.emplace_back(shape.getPosition(),
+            target->getPosition());
+        if (!target->isAlive()) target = nullptr;
+    }
+};
 
-class MageTower : public Tower {  
-public:  
-  MageTower(float cellSize, int row, int col)  
-      : Tower(/*cost=*/100, /*range=*/3.f, /*damage=*/20, /*reloadTime=*/1.0f,  
-          cellSize, row, col)  
-  {  
-      shape.setFillColor(sf::Color(128, 0, 128)); // Morado
-  }  
-};  
+// Tres tipos, sólo cambian color y parámetros :contentReference[oaicite:2]{index=2}:contentReference[oaicite:3]{index=3}
 
-class ArtilleryTower : public Tower {  
-public:  
-  ArtilleryTower(float cellSize, int row, int col)  
-      : Tower(/*cost=*/150, /*range=*/2.f, /*damage=*/40, /*reloadTime=*/2.0f,  
-          cellSize, row, col)  
-  {  
-      shape.setFillColor(sf::Color::Black);        // Negro
-  }  
+class ArcherTower : public Tower {
+public:
+    ArcherTower(float cs, int r, int c)
+        : Tower(50, 5, 10, 0.5f, cs, r, c)
+    {
+        shape.setFillColor({ 139,69,19 });
+    }
+};
+
+class MageTower : public Tower {
+public:
+    MageTower(float cs, int r, int c)
+        : Tower(100, 3, 20, 1.0f, cs, r, c)
+    {
+        shape.setFillColor({ 128,0,128 });
+    }
+};
+
+class ArtilleryTower : public Tower {
+public:
+    ArtilleryTower(float cs, int r, int c)
+        : Tower(150, 2, 40, 2.0f, cs, r, c)
+    {
+        shape.setFillColor(sf::Color::Black);
+    }
 };
