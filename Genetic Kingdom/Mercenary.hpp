@@ -10,7 +10,7 @@ public:
         magicResist = 0.3f;
         artilleryResist = 0.8f;
         //setColor({ 0,100,0 });
-        this->speed = 100.f;
+        this->speed = 60.f;
         goldDrop = 40;
     }
 };
