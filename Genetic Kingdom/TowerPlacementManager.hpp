@@ -17,6 +17,22 @@ private:
     const int buttonSize = 50;
     sf::Vector2i cell;
     bool active = false;
-    struct Button { sf::RectangleShape rect; std::string label; };
-    Button btnArcher, btnMage, btnArtillery;
+    const sf::Font& font;
+
+    struct Button {
+        sf::RectangleShape rect;
+        sf::Text text;
+        // Constructor que inicializa el texto con la fuente
+        Button(const sf::Font& font)
+            : text(font) {
+        }
+    };
+
+    Button btnArcher;
+    Button btnMage;
+    Button btnArtillery;
+
+
+    // Fondo semitransparente
+    sf::RectangleShape background;
 };
