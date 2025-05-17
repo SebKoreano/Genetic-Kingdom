@@ -12,6 +12,7 @@ public:
         artilleryResist = 0.3f;
         //setColor({ 0,100,0 });
         this->speed = 50.f;
+        goldDrop = 20;
     }
 };
  

@@ -76,7 +76,7 @@ void GameController::handleEvent(const sf::Event* ev) {
 }
 
 void GameController::update(float dt) {
-    waveMgr.update(dt);
+    waveMgr.update(dt, player);
 
     // obtener punteros vigentes
     auto enem = waveMgr.getEnemyList();

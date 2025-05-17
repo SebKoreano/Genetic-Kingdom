@@ -6,6 +6,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <sstream>
+#include "GameController.hpp"
 
 WaveManager::WaveManager(GridMap& map, float cellSize, float speed,
     int minEnemies, int maxEnemies,
@@ -45,7 +46,7 @@ void WaveManager::handleClick(int x, int y) {
     }
 }
 
-void WaveManager::update(float dt) {
+void WaveManager::update(float dt, Player& player) {
     spawnTimer += dt;
     if (spawnedCount < spawnCount && spawnTimer >= spawnInterval) {
         spawnTimer -= spawnInterval;
@@ -67,8 +68,14 @@ void WaveManager::update(float dt) {
         ++spawnedCount;
     }
     for (int i = 0;i < enemies.size();++i) enemies.get(i)->update(dt);
-    for (int i = 0;i < enemies.size();) {
-        if (!enemies.get(i)->isAlive()) enemies.removeAt(i);
+    for (int i = 0; i < enemies.size();) {
+        Enemy * e = enemies.get(i);
+        if (!e->isAlive()) {
+            // Suelta oro al morir
+            // Nota: e->getGoldDrop() viene de Enemy
+            player.addGold(e->getGoldDrop());
+            enemies.removeAt(i);
+        }
         else ++i;
     }
     if (spawnedCount >= spawnCount && enemies.size() == 0) {
