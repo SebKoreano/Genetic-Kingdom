@@ -47,6 +47,7 @@ void WaveManager::handleClick(int x, int y) {
 }
 
 void WaveManager::update(float dt, Player& player) {
+    // === spawn y movimiento de enemigos ===
     spawnTimer += dt;
     if (spawnedCount < spawnCount && spawnTimer >= spawnInterval) {
         spawnTimer -= spawnInterval;
@@ -67,17 +68,25 @@ void WaveManager::update(float dt, Player& player) {
         enemies.push(e);
         ++spawnedCount;
     }
+    // === actualización y eliminación ===
     for (int i = 0;i < enemies.size();++i) enemies.get(i)->update(dt);
     for (int i = 0; i < enemies.size();) {
-        Enemy * e = enemies.get(i);
+        Enemy* e = enemies.get(i);
+        e->update(dt);
         if (!e->isAlive()) {
-            // Suelta oro al morir
-            // Nota: e->getGoldDrop() viene de Enemy
-            player.addGold(e->getGoldDrop());
+            if (e->hasReachedGoal()) {
+                player.loseLife(1);               
+            }
+            else {
+                player.addGold(e->getGoldDrop()); 
+            }
             enemies.removeAt(i);
         }
-        else ++i;
+        else {
+            ++i;
+        }
     }
+    // === pasar a siguiente ola ===
     if (spawnedCount >= spawnCount && enemies.size() == 0) {
         ++waveNumber;
         spawnWave();

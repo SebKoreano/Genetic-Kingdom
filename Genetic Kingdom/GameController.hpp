@@ -31,6 +31,7 @@ private:
 
     // Textos UI
     sf::Text goldText;
+    sf::Text livesText;
 
     // Para manejo de input
     int selectedRow = -1;

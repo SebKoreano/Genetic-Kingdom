@@ -11,13 +11,18 @@ GameController::GameController(sf::RenderWindow& window,
     , waveMgr(map, cellSize, 120.f, 5, 10, font)
     , placementMgr(cellSize, font)
     , goldText(font)
+    , livesText(font)
 {
     window.setFramerateLimit(60);
 
     // Configurar texto de oro
     goldText.setCharacterSize(24);
     goldText.setFillColor(sf::Color::White);
-    goldText.setPosition(sf::Vector2f(150.f, rows * cellSize + 5.f));
+    goldText.setPosition(sf::Vector2f(145.f, rows * cellSize + 5.f));
+    // Configurar texto de vidas
+    livesText.setCharacterSize(24);
+    livesText.setFillColor(sf::Color::White);
+    livesText.setPosition(sf::Vector2f(280.f, rows * cellSize + 5.f));
 }
 
 void GameController::run() {  
@@ -98,8 +103,12 @@ void GameController::draw() {
     map.draw(window);
     for (auto* t : towers) t->draw(window);
     waveMgr.draw(window);
+
+	// dibujar texto de oro y vidas
     goldText.setString("Oro: " + std::to_string(player.getGold()));
     window.draw(goldText);
+    livesText.setString("Vidas: " + std::to_string(player.getLives()));
+    window.draw(livesText);
 
     // dibujar balas
     for (auto& b : bullets)

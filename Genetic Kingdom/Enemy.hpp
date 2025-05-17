@@ -23,7 +23,9 @@ public:
         if (health <= 0.f) alive = false;  
     }  
     int getGoldDrop() const { return goldDrop; }
+    bool hasReachedGoal() const;
 private: 
+    bool reachedGoal = false;
     int goldDrop = 0;
     float arrowResist = 0.f,  
         magicResist = 0.f,  

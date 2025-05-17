@@ -6,6 +6,11 @@ void Enemy::setColor(const sf::Color& color) {
     shape.setFillColor(color);
 }
 
+// Getter de llegar al objetivo
+bool Enemy::hasReachedGoal() const {
+    return reachedGoal;
+}
+
 Enemy::Enemy(GridMap& map, float cellSize, float speed)
     : gridMap(map), cellSize(cellSize), speed(speed)
 {
@@ -37,7 +42,10 @@ void Enemy::update(float dt) {
             shape.setPosition(tp);
             currentRow = t->row; currentCol = t->col;
             ++pathIndex;
-            if (pathIndex >= path.size()) alive = false;
+            if (pathIndex >= path.size()) {
+                alive = false;
+                reachedGoal = true;
+            }
         }
     }
 }
