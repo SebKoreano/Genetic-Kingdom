@@ -7,7 +7,7 @@ GameController::GameController(sf::RenderWindow& window,
     const sf::Font& font)
     : window(window)
     , map(rows, cols, cellSize)
-    , player(200, 10)
+    , player(400, 20)
     , waveMgr(map, cellSize, 120.f, 5, 10, font)
     , placementMgr(cellSize, font)
     , goldText(font)

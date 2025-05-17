@@ -6,7 +6,7 @@ public:
     ArtilleryTower(float cellSize, int row, int col)
         : Tower(/*cost=*/150,
             /*range=*/2.f,
-            /*damage=*/80,
+            /*damage=*/200,
             /*reloadTime=*/2.0f,
             cellSize, row, col)
     {

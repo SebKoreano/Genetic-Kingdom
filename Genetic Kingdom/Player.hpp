@@ -3,7 +3,7 @@
 // Clase para gestionar recursos del jugador
 class Player {
 public:
-    Player(int startGold = 200, int startLives = 10)
+    Player(int startGold = 400, int startLives = 20)
         : gold(startGold)
         , lives(startLives)
     {

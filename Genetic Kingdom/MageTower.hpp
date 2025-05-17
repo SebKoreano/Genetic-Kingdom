@@ -6,7 +6,7 @@ public:
     MageTower(float cellSize, int row, int col)
         : Tower(/*cost=*/100,
             /*range=*/3.f,
-            /*damage=*/40,
+            /*damage=*/80,
             /*reloadTime=*/1.0f,
             cellSize, row, col)
     {
