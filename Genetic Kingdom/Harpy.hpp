@@ -9,7 +9,7 @@ public:
         arrowResist = 0.0f;
         magicResist = 0.0f;
         artilleryResist = 0.5f;
-        //setColor({ 0,100,0 });
+        setColor(sf::Color(139, 69, 19));
         this->speed = 50.f;
         goldDrop = 30;
     }
