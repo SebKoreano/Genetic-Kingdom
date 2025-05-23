@@ -59,12 +59,6 @@ void WaveManager::update(float dt, Player& player) {
         case 2: e = new Harpy(map, cellSize, speed);     break;
         case 3: e = new Mercenary(map, cellSize, speed); break;
         }
-        switch (type) {
-        case 0: e->setColor(sf::Color(0, 100, 0));    break; // Ogro
-        case 1: e->setColor(sf::Color(135, 206, 235));break; // Elfo Oscuro
-        case 2: e->setColor(sf::Color(139, 69, 19));  break; // Harpía
-        case 3: e->setColor(sf::Color(128, 128, 128));break; // Mercenario
-        }
         enemies.push(e);
         ++spawnedCount;
     }
