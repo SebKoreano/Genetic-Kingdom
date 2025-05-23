@@ -27,6 +27,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="NodeVector.cpp" />
     <ClCompile Include="TowerPlacementManager.cpp" />
+    <ClCompile Include="TowerUpgradeManager.cpp" />
     <ClCompile Include="WaveManager.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -46,6 +47,7 @@
     <ClInclude Include="Player.hpp" />
     <ClInclude Include="TowerPlacementManager.hpp" />
     <ClInclude Include="Towers.hpp" />
+    <ClInclude Include="TowerUpgradeManager.hpp" />
     <ClInclude Include="WaveManager.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

@@ -15,6 +15,7 @@ GameController::GameController(sf::RenderWindow& window,
     , gameOver(false)
     , gameOverBackground()
     , gameOverText(font)
+    , upgradeMgr(window.getSize().x, window.getSize().y, font)
 {
     window.setFramerateLimit(60);
 

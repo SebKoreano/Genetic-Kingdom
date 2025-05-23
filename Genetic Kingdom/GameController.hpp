@@ -6,9 +6,10 @@
 #include "TowerPlacementManager.hpp"
 #include <vector>
 #include "Bullet.hpp"
+#include "TowerUpgradeManager.hpp"
 
 
-/// Controlador principal del juego: orquesta mapa, oleadas, jugador y torres
+/// Controlador principal del juego: mapa, oleadas, jugador y torres
 class GameController {
 public:
     GameController(sf::RenderWindow& window,
@@ -23,6 +24,7 @@ public:
     std::vector<Bullet>   bullets;
 
 private:
+    TowerUpgradeManager upgradeMgr;
     sf::RenderWindow& window;
     GridMap map;
     Player player;
