@@ -1,4 +1,4 @@
-#include "GameController.hpp"
+ï»¿#include "GameController.hpp"
 
 GameController::GameController(sf::RenderWindow& window,
     int rows,
@@ -57,41 +57,64 @@ void GameController::run() {
 }
 
 void GameController::handleEvent(const sf::Event* ev) {
-    if (!ev) return;
+    if (!ev || gameOver) return;
     if (auto mb = ev->getIf<sf::Event::MouseButtonPressed>()) {
-        if (mb->button == sf::Mouse::Button::Left) {
-            int x = mb->position.x;
-            int y = mb->position.y;
-            if (placementMgr.isActive()) {
-                Tower* t = placementMgr.processClick(x, y);
-                if (t) {
-                    // Intentar colocar torre como obstáculo
+        if (mb->button != sf::Mouse::Button::Left) return;
+        int x = mb->position.x;
+        int y = mb->position.y;
+
+        // 1) Popup de mejora activo
+        if (upgradeMgr.isActive()) {
+            int res = upgradeMgr.processClick(x, y);
+            if (res == 1) {
+                Tower* t = upgradeMgr.getSelectedTower();
+                int price = t->getUpgradeCost();
+                if (player.spendGold(price)) t->upgrade();
+            }
+            return;
+        }
+
+        // 2) Popup de colocaciÃ³n activo
+        if (placementMgr.isActive()) {
+            Tower* newT = placementMgr.processClick(x, y);
+            if (newT) {
+                map.toggleWalkable(selectedRow, selectedCol);
+                if (!map.isPathAvailable() || !player.spendGold(newT->getCost())) {
                     map.toggleWalkable(selectedRow, selectedCol);
-                    if (!map.isPathAvailable() || !player.spendGold(t->getCost())) {
-                        // Revertir si bloqueo o falta de oro
-                        map.toggleWalkable(selectedRow, selectedCol);
-                        delete t;
-                    }
-                    else {
-                        towers.push_back(t);
-                        waveMgr.resetAllEnemyPaths();
-                    }
+                    delete newT;
+                }
+                else {
+                    towers.push_back(newT);
+                    waveMgr.resetAllEnemyPaths();
                 }
             }
-            else {
-                // Iniciar solicitud de colocación
-                float cs = placementMgr.getCellSize();
-                int col = x / static_cast<int>(cs);
-                int row = y / static_cast<int>(cs);
-                if (row >= 0 && row < map.getRows() && col >= 0 && col < map.getCols()) {
-                    selectedRow = row;
-                    selectedCol = col;
-                    placementMgr.requestPlacement(row, col);
+            return;
+        }
+
+        // 3) Clic sobre torre existente -> iniciar mejora
+        float cs = placementMgr.getCellSize();
+        int col = x / static_cast<int>(cs);
+        int row = y / static_cast<int>(cs);
+        for (auto* t : towers) {
+            auto gp = t->getGridPosition();  // {col, row}
+            if (gp.x == col && gp.y == row) {
+                if (upgradeMgr.requestUpgrade(t)) {
+                    return;
                 }
             }
         }
+
+        // 4) Clic en celda vacÃ­a -> iniciar colocaciÃ³n
+        if (row >= 0 && row < map.getRows() && col >= 0 && col < map.getCols()) {
+            selectedRow = row;
+            selectedCol = col;
+            placementMgr.requestPlacement(row, col);
+        }
     }
 }
+
+
+
 
 void GameController::update(float dt) {
     waveMgr.update(dt, player);
@@ -100,7 +123,7 @@ void GameController::update(float dt) {
     // obtener punteros vigentes
     auto enem = waveMgr.getEnemyList();
 
-    // actualizar torres (añade balas)
+    // actualizar torres (aÃ±ade balas)
     for (auto* t : towers)
         t->update(enem, dt, bullets);
 
@@ -134,5 +157,6 @@ void GameController::draw() {
     }
 
     placementMgr.draw(window);
+    upgradeMgr.draw(window);
     window.display();
 }

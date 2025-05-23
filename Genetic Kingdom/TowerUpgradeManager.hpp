@@ -16,6 +16,9 @@ public:
     // Dibuja el popup si está activo
     void draw(sf::RenderWindow& window) const;
 
+    // Retorna la torre actualmente seleccionada para mejora
+    Tower* getSelectedTower() const { return tower; }
+
     bool isActive() const { return active; }
 
 private:

@@ -56,6 +56,7 @@ public:
     }
 
     int getCost() const { return cost; }
+    sf::Vector2i getGridPosition() const { return gridPos; }
     int getUpgradeCost() const {
         return static_cast<int>(baseCost * (1.f + 0.25f * level));
     }
@@ -65,10 +66,10 @@ public:
         if (!canUpgrade()) return;
         // increase cost
         cost = getUpgradeCost();
-        // increase damage 25%
-        currentDamage *= 1.25f;
-        // reduce reload time 5%
-        reloadTime *= 0.95f;
+        // increase damage 90%
+        currentDamage *= 1.90f;
+        // reduce reload time 20%
+        reloadTime *= 0.80f;
         // graphical overlay
         float newRadius = shape.getRadius() * 0.75f;
         sf::CircleShape ovr(newRadius);
