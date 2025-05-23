@@ -6,6 +6,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <sstream>
+#include "GameController.hpp"
 
 WaveManager::WaveManager(GridMap& map, float cellSize, float speed,
     int minEnemies, int maxEnemies,
@@ -45,7 +46,8 @@ void WaveManager::handleClick(int x, int y) {
     }
 }
 
-void WaveManager::update(float dt) {
+void WaveManager::update(float dt, Player& player) {
+    // === spawn y movimiento de enemigos ===
     spawnTimer += dt;
     if (spawnedCount < spawnCount && spawnTimer >= spawnInterval) {
         spawnTimer -= spawnInterval;
@@ -66,11 +68,25 @@ void WaveManager::update(float dt) {
         enemies.push(e);
         ++spawnedCount;
     }
+    // === actualización y eliminación ===
     for (int i = 0;i < enemies.size();++i) enemies.get(i)->update(dt);
-    for (int i = 0;i < enemies.size();) {
-        if (!enemies.get(i)->isAlive()) enemies.removeAt(i);
-        else ++i;
+    for (int i = 0; i < enemies.size();) {
+        Enemy* e = enemies.get(i);
+        e->update(dt);
+        if (!e->isAlive()) {
+            if (e->hasReachedGoal()) {
+                player.loseLife(1);               
+            }
+            else {
+                player.addGold(e->getGoldDrop()); 
+            }
+            enemies.removeAt(i);
+        }
+        else {
+            ++i;
+        }
     }
+    // === pasar a siguiente ola ===
     if (spawnedCount >= spawnCount && enemies.size() == 0) {
         ++waveNumber;
         spawnWave();
@@ -83,4 +99,10 @@ void WaveManager::draw(sf::RenderWindow& window) {
     ss << "Oleada: " << waveNumber;
     waveText.setString(ss.str());
     window.draw(waveText);
+}
+
+void WaveManager::resetAllEnemyPaths() {
+    for (int i = 0; i < enemies.size(); ++i) {
+        enemies.get(i)->resetPath();
+    }
 }
