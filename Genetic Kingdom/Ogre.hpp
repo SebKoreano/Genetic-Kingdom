@@ -1,19 +1,13 @@
-#pragma once  
-#include "Enemy.hpp"  
-
 class Ogre : public Enemy {  
 public:  
-    Ogre(GridMap& map, float cellSize, float speed)
-        : Enemy(map, cellSize, speed)
+    Ogre(GridMap& map, float cellSize, const Genes& g)
+        : Enemy(map, cellSize, g.speed)
     {
-        health = 140.f;
-        arrowResist = 0.2f;
-        magicResist = 0.1f;
-        artilleryResist = 0.3f;
-        setColor({ 0,100,0 });
-        this->speed = 40.f;
+        health = g.health;
+        arrowResist = g.arrowResist;
+        magicResist = g.magicResist;
+        artilleryResist = g.artilleryResist;
+        setColor({ 0, 100, 0 });
         goldDrop = 20;
     }
 };
- 
-
