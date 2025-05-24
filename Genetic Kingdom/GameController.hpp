@@ -4,25 +4,17 @@
 #include "Player.hpp"
 #include "WaveManager.hpp"
 #include "TowerPlacementManager.hpp"
-#include <vector>
+#include "SimpleVector.hpp"
 #include "Bullet.hpp"
 #include "TowerUpgradeManager.hpp"
 
-
-/// Controlador principal del juego: mapa, oleadas, jugador y torres
 class GameController {
 public:
     GameController(sf::RenderWindow& window,
-        int rows,
-        int cols,
-        float cellSize,
-        const sf::Font& font);
-
-    /// Inicia el loop principal
+        int rows, int cols, float cellSize, const sf::Font& font);
     void run();
-    std::vector<Tower*>   towers;
-    std::vector<Bullet>   bullets;
-
+    SimpleVector<Tower*> towers;
+    SimpleVector<Bullet> bullets;
 private:
     TowerUpgradeManager upgradeMgr;
     sf::RenderWindow& window;
@@ -30,22 +22,11 @@ private:
     Player player;
     WaveManager waveMgr;
     TowerPlacementManager placementMgr;
-
-    // Textos UI
-    sf::Text goldText;
-    sf::Text livesText;
-
-    // Game over UI
-    bool gameOver;
+    sf::Text goldText, livesText, gameOverText;
     sf::RectangleShape gameOverBackground;
-    sf::Text gameOverText;
-
-    // Para manejo de input
-    int selectedRow = -1;
-    int selectedCol = -1;
-
+    bool gameOver;
+    int selectedRow = -1, selectedCol = -1;
     sf::Clock clock;
-
     void handleEvent(const sf::Event* ev);
     void update(float dt);
     void draw();

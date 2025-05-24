@@ -1,12 +1,10 @@
 ﻿#include "GameController.hpp"
+#include "SimpleVector.hpp"
 
-GameController::GameController(sf::RenderWindow& window,
-    int rows,
-    int cols,
-    float cellSize,
-    const sf::Font& font)
-    : window(window)
-    , map(rows, cols, cellSize)
+GameController::GameController(sf::RenderWindow& w,int rows,int cols,float cellSize,const sf::Font& font)
+    : upgradeMgr(w.getSize().x, w.getSize().y, font)   
+    , window(w)                                         
+    , map(rows, cols, cellSize)                         
     , player(400, 20)
     , waveMgr(map, cellSize, 120.f, 5, 10, font)
     , placementMgr(cellSize, font)
@@ -15,7 +13,6 @@ GameController::GameController(sf::RenderWindow& window,
     , gameOver(false)
     , gameOverBackground()
     , gameOverText(font)
-    , upgradeMgr(window.getSize().x, window.getSize().y, font)
 {
     window.setFramerateLimit(60);
 
@@ -23,10 +20,12 @@ GameController::GameController(sf::RenderWindow& window,
     goldText.setCharacterSize(24);
     goldText.setFillColor(sf::Color::White);
     goldText.setPosition(sf::Vector2f(145.f, rows * cellSize + 5.f));
+
     // Configurar texto de vidas
     livesText.setCharacterSize(24);
     livesText.setFillColor(sf::Color::White);
     livesText.setPosition(sf::Vector2f(280.f, rows * cellSize + 5.f));
+
     // Configure game over overlay
     gameOverBackground.setSize(sf::Vector2f(window.getSize()));
     gameOverBackground.setFillColor(sf::Color(0, 0, 0, 150));
@@ -38,22 +37,16 @@ GameController::GameController(sf::RenderWindow& window,
     gameOverText.setPosition(sf::Vector2f(window.getSize().x / 2.f, window.getSize().y / 2.f));
 }
 
-void GameController::run() {  
-   while (window.isOpen()) {  
-       // Procesar eventos  
-       while (auto ev = window.pollEvent()) {  
-           if (ev && ev->is<sf::Event::Closed>()) {  
-               window.close();  
-           }  
-           if (ev) {  
-               handleEvent(&(*ev));  
-           }  
-       }  
-
-       float dt = clock.restart().asSeconds();  
-       update(dt);  
-       draw();  
-   }  
+void GameController::run() {
+    while (window.isOpen()) {
+        while (auto ev = window.pollEvent()) {
+            if (ev && ev->is<sf::Event::Closed>()) window.close();
+            handleEvent(&*ev);
+        }
+        float dt = clock.restart().asSeconds();
+        update(dt);
+        draw();
+    }
 }
 
 void GameController::handleEvent(const sf::Event* ev) {
@@ -95,7 +88,8 @@ void GameController::handleEvent(const sf::Event* ev) {
         float cs = placementMgr.getCellSize();
         int col = x / static_cast<int>(cs);
         int row = y / static_cast<int>(cs);
-        for (auto* t : towers) {
+        for (size_t i = 0; i < towers.size(); ++i) {
+            Tower* t = towers[i];
             auto gp = t->getGridPosition();  // {col, row}
             if (gp.x == col && gp.y == row) {
                 if (upgradeMgr.requestUpgrade(t)) {
@@ -113,49 +107,39 @@ void GameController::handleEvent(const sf::Event* ev) {
     }
 }
 
-
-
-
 void GameController::update(float dt) {
     waveMgr.update(dt, player);
     if (player.getLives() <= 0) gameOver = true;
-
-    // obtener punteros vigentes
-    auto enem = waveMgr.getEnemyList();
-
-    // actualizar torres (añade balas)
-    for (auto* t : towers)
-        t->update(enem, dt, bullets);
-
-    // actualizar y purgar balas
-    for (auto it = bullets.begin(); it != bullets.end();) {
-        it->update(dt);
-        if (it->isExpired()) it = bullets.erase(it);
-        else ++it;
+    // convertir lista std::vector<Enemy*> a SimpleVector
+    auto stdList = waveMgr.getEnemyList();
+    SimpleVector<Enemy*> enem;
+    for (size_t i = 0;i < stdList.size();++i) enem.push_back(stdList[i]);
+    // actualizar torres
+    for (size_t i = 0;i < towers.size();++i)
+        towers[i]->update(enem, dt, bullets);
+    // actualizar y eliminar balas expiradas
+    for (size_t i = 0;i < bullets.size();) {
+        bullets[i].update(dt);
+        if (bullets[i].isExpired()) bullets.removeAt(i);
+        else ++i;
     }
 }
 
 void GameController::draw() {
     window.clear();
     map.draw(window);
-    for (auto* t : towers) t->draw(window);
+    for (size_t i = 0;i < towers.size();++i) towers[i]->draw(window);
     waveMgr.draw(window);
-
-	// dibujar texto de oro y vidas
     goldText.setString("Oro: " + std::to_string(player.getGold()));
     window.draw(goldText);
     livesText.setString("Vidas: " + std::to_string(player.getLives()));
     window.draw(livesText);
-
-    // dibujar balas
-    for (auto& b : bullets)
-        window.draw(b.getShape());
-
+    for (size_t i = 0;i < bullets.size();++i)
+        window.draw(bullets[i].getShape());
     if (gameOver) {
         window.draw(gameOverBackground);
         window.draw(gameOverText);
     }
-
     placementMgr.draw(window);
     upgradeMgr.draw(window);
     window.display();
