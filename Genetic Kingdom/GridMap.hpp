@@ -1,9 +1,13 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include <vector>
+#include "SimpleVector.hpp"
 
 class Node {
 public:
+    Node()
+        : row(0), col(0), walkable(true), gCost(0), hCost(0), parent(nullptr)
+    {
+    }
     int row, col;                 // coordenadas fila y columna en la grilla
     bool walkable = true;         // indica si el nodo es transitable
     float gCost = 0, hCost = 0;   // costos para algoritmo A*
@@ -21,7 +25,8 @@ public:
     // rows: número de filas
     // cols: número de columnas
     // cellSize: tamaño en píxeles de cada celda
-    GridMap(int rows, int cols, float cellSize);
+    GridMap(int rows_, int cols_, float cellSize_);
+    ~GridMap();
 
     // Dibuja todos los nodos en la ventana SFML
     void draw(sf::RenderWindow& window) const;
@@ -30,7 +35,7 @@ public:
     Node& getNode(int row, int col);
 
     // Obtiene vecinos válidos (transitables) de un nodo (4 direcciones)
-    std::vector<Node*> getNeighbors(const Node& node) const;
+    SimpleVector<Node*> getNeighbors(const Node& node) const;
 
     // Obtiene la posición inicial (inicio de la ruta)
     sf::Vector2i getStartPosition() const;
@@ -48,11 +53,11 @@ public:
     int getCols() const;
 
 private:
-    int rows, cols;                      // dimensiones de la grilla
-    float cellSize;                      // tamaño de cada celda en píxeles
-    std::vector<std::vector<Node>> grid; // matriz de nodos
-    sf::Vector2i start;                  // posición de inicio en la grilla
-    sf::Vector2i goal;                   // posición meta en la grilla
+    int rows, cols;         // dimensiones de la grilla
+    float cellSize;         // tamaño de cada celda en píxeles
+    Node* grid;             // array lineal de nodos
+    sf::Vector2i start;     // posición de inicio en la grilla
+    sf::Vector2i goal;      // posición meta en la grilla
 
     // Inicializa la grilla y colorea start (verde) y goal (rojo)
     void createGrid();

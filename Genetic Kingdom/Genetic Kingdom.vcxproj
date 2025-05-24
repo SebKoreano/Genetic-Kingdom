@@ -26,7 +26,7 @@
     <ClCompile Include="GridMap.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="NodeVector.cpp" />
-    <ClCompile Include="SimpleQueue.cpp" />
+    <ClCompile Include="SimpleQueue.hpp" />
     <ClCompile Include="TowerPlacementManager.cpp" />
     <ClCompile Include="TowerUpgradeManager.cpp" />
     <ClCompile Include="WaveManager.cpp" />
@@ -42,6 +42,7 @@
     <ClInclude Include="GridMap.hpp" />
     <ClInclude Include="Harpy.hpp" />
     <ClInclude Include="MageTower.hpp" />
+    <ClInclude Include="SimpleVector.hpp" />
     <ClInclude Include="Mercenary.hpp" />
     <ClInclude Include="NodeVector.h" />
     <ClInclude Include="Ogre.hpp" />

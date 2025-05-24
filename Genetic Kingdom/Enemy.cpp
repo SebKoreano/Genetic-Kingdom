@@ -65,14 +65,18 @@ void Enemy::calculatePath() {
         for (int i = 0;i < openList.size();++i) if (openList.get(i) == c) { openList.removeAt(i);break; }
         closedList.push_back(c);
         auto nbs = gridMap.getNeighbors(*c);
-        for (Node* nbr : nbs) {
-            if (isInList(closedList, nbr)) continue;
+        for (size_t i = 0; i < nbs.size(); ++i) {
+            Node* nbr = nbs[i];
+            if (isInList(closedList, nbr))
+                continue;
+
             float tg = c->gCost + 1;
             if (!isInList(openList, nbr) || tg < nbr->gCost) {
                 nbr->gCost = tg;
                 nbr->hCost = heuristic(nbr, gn);
                 nbr->parent = c;
-                if (!isInList(openList, nbr)) openList.push_back(nbr);
+                if (!isInList(openList, nbr))
+                    openList.push_back(nbr);
             }
         }
     }
