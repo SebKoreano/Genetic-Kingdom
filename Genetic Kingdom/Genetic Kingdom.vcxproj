@@ -26,6 +26,7 @@
     <ClCompile Include="GridMap.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="NodeVector.cpp" />
+    <ClCompile Include="SimpleQueue.cpp" />
     <ClCompile Include="TowerPlacementManager.cpp" />
     <ClCompile Include="TowerUpgradeManager.cpp" />
     <ClCompile Include="WaveManager.cpp" />
