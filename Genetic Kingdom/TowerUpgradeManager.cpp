@@ -48,8 +48,9 @@ TowerUpgradeManager::TowerUpgradeManager(float windowWidth, float windowHeight, 
 
 bool TowerUpgradeManager::requestUpgrade(Tower* t) {
     if (!t || !t->canUpgrade()) return false;
+    tower = t;
     active = true;
-    int price = t->getUpgradeCost();
+    int price = tower->getUpgradeCost();
     popupText.setString("Mejorar? $" + std::to_string(price));
 
     // Centrar popupText en el panel
