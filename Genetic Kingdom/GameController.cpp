@@ -28,7 +28,7 @@ GameController::GameController(sf::RenderWindow& w,int rows,int cols,float cellS
 
     // Configure game over overlay
     gameOverBackground.setSize(sf::Vector2f(window.getSize()));
-    gameOverBackground.setFillColor(sf::Color(0, 0, 0, 150));
+    gameOverBackground.setFillColor(sf::Color(0, 0, 0, 255));
     gameOverText.setString("Perdiste!");
     gameOverText.setCharacterSize(64);
     gameOverText.setFillColor(sf::Color::White);
