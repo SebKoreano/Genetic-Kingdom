@@ -14,8 +14,8 @@ public:
     void draw(sf::RenderWindow& window);
     /// Fuerza a todos los enemigos activos a recálcular su ruta
     void resetAllEnemyPaths();
-    std::vector<Enemy*> getEnemyList() const {
-        std::vector<Enemy*> out;
+    SimpleVector<Enemy*> getEnemyList() const {
+        SimpleVector<Enemy*> out;
         for (int i = 0;i < enemies.size();++i)
             out.push_back(enemies.get(i));
         return out;

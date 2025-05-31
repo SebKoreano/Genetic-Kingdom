@@ -110,11 +110,7 @@ void GameController::handleEvent(const sf::Event* ev) {
 void GameController::update(float dt) {
     waveMgr.update(dt, player);
     if (player.getLives() <= 0) gameOver = true;
-    // convertir lista std::vector<Enemy*> a SimpleVector
-    auto stdList = waveMgr.getEnemyList();
-    SimpleVector<Enemy*> enem;
-    for (size_t i = 0;i < stdList.size();++i) enem.push_back(stdList[i]);
-    // actualizar torres
+    SimpleVector enem = waveMgr.getEnemyList();
     for (size_t i = 0;i < towers.size();++i)
         towers[i]->update(enem, dt, bullets);
     // actualizar y eliminar balas expiradas

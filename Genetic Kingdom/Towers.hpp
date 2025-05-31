@@ -21,8 +21,7 @@ public:
     virtual ~Tower() = default;
 
     // Actualiza torre: encuentra objetivo y dispara
-    void update(const SimpleVector<Enemy*>& enemies, float dt,
-        SimpleVector<Bullet>& bullets) {
+    void update(const SimpleVector<Enemy*>& enemies, float dt, SimpleVector<Bullet>& bullets) {
         if (target) {
             if (!target->isAlive() || !inRange(target)) target = nullptr;
         }
@@ -32,9 +31,8 @@ public:
                 if (e->isAlive() && inRange(e)) { target = e; break; }
             }
         }
-        reloadTimer = std::max(0.f, reloadTimer - dt);
+		reloadTimer = std::max(0.f, reloadTimer - dt); 
         if (target && reloadTimer <= 0.f) {
-            // sustituye emplace_back por push_back
             float dmg = currentDamage;
             if (range >= 3) dmg *= (1 - target->getArrowResistance());
             else if (range >= 2) dmg *= (1 - target->getMagicResistance());

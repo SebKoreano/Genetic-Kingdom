@@ -48,7 +48,7 @@ public:
         return expired;
     }
 
-    // Acceso para dibujar
+	// Devuelve la forma de la bala para dibujarla
     const sf::RectangleShape& getShape() const {
         return shape;
     }

@@ -10,8 +10,7 @@
 
 class GameController {
 public:
-    GameController(sf::RenderWindow& window,
-        int rows, int cols, float cellSize, const sf::Font& font);
+    GameController(sf::RenderWindow& window,int rows, int cols, float cellSize, const sf::Font& font);
     void run();
     SimpleVector<Tower*> towers;
     SimpleVector<Bullet> bullets;
